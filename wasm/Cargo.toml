@@ -1,0 +1,10 @@
+[package]
+name = "wordcab-fetch-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Dependency-free WebAssembly retrieval kernel for Wordcab Fetch"
+repository = "https://github.com/Wordcab/fetch"
+
+[lib]
+crate-type = ["cdylib", "rlib"]

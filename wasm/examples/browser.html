@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wordcab Fetch browser smoke test</title>
+    <style>
+      body { margin: 3rem auto; max-width: 52rem; padding: 0 1rem; font: 16px/1.5 ui-monospace, monospace; }
+      pre { overflow: auto; padding: 1rem; background: #f4f4f4; border-radius: 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Wordcab Fetch</h1>
+    <p>The vectors and query below never leave this tab.</p>
+    <pre id="output">Loading WASM…</pre>
+    <script type="module">
+      import { loadFetch } from "../fetch.mjs";
+
+      const output = document.querySelector("#output");
+      const runtime = await loadFetch(
+        "../../target/wasm32-unknown-unknown/release/wordcab_fetch_wasm.wasm",
+      );
+      const vectors = new Float32Array([
+        1, -1, -1, -1,
+        -1, 1, -1, -1,
+        -1, -1, 1, -1,
+        -1, -1, -1, 1,
+      ]);
+      const index = runtime.fromVectors(vectors, 4, 4);
+      const started = performance.now();
+      const hits = index.search(new Float32Array([0.9, -1, -1, -1]), {
+        candidates: 4,
+        topK: 2,
+      });
+      const elapsedMs = performance.now() - started;
+      index.free();
+      output.textContent = JSON.stringify({ elapsedMs, hits }, null, 2);
+    </script>
+  </body>
+</html>
